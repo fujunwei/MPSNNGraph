@@ -299,7 +299,7 @@ void ExecutionImplMacMPS::StartCompute() {
         }
 
         for (size_t i = 0; i < compilation_->outputs_.size(); ++i) {
-          MPSImage* output_img = output_mps_images[compilation_->outputs_[i]];
+          MPSImage* output_img = image_array[0];//output_mps_images[compilation_->outputs_[i]];
           id<MTLBuffer> output_buffer = output_mtlbuffers_[i];
 
           id<MTLComputeCommandEncoder> encoder =
@@ -335,9 +335,9 @@ void ExecutionImplMacMPS::StartCompute() {
           std::vector<float> output_data(output_operand.requiredSize() / sizeof(float));
           memcpy(output_data.data(), [output_buffer contents],
                  output_data.size() * sizeof(float));
-//          for (size_t j = 0; j < output_data.size(); ++j) {
-//            std::cout << " ==== " << output_data[j] << "\n";
-//          }
+          for (size_t j = 0; j < output_data.size(); ++j) {
+            std::cout << " ==== " << output_data[j] << "\n";
+          }
           output_data_ = output_data;
         }
       }  // @autoreleasepool

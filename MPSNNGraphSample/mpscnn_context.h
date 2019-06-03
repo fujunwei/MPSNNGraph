@@ -9,6 +9,7 @@
 #import <Metal/MTLBuffer.h>
 #import <Metal/MTLDevice.h>
 #import <Metal/MTLLibrary.h>
+#import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
 #include <vector>
 #include <string>
@@ -32,7 +33,10 @@ struct API_AVAILABLE(macosx(10.13)) MPSCNNContext {
   id<MTLComputePipelineState> GetPipelineState(NSString* kernel);
   id<MTLComputePipelineState> GetSpecializedPipelineState(NSString* kernel,
                                                           const std::vector<ushort>& constants);
-
+  MPSImage* CreateMPSImage(id<MTLCommandBuffer> command_buffer, const std::vector<int>& shape,
+                            const std::vector<float>& data);
+  id<MTLBuffer> OutputBuffer(id<MTLCommandBuffer> command_buffer, const MPSImage* output_img, size_t size);
+  
  private:
   std::unordered_map<std::string, id<MTLComputePipelineState>> pipelineCache_;
 };

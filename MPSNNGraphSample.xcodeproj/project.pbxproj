@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E42840CC22A0060100BE5915 /* mpscnn_context.mm in Sources */ = {isa = PBXBuildFile; fileRef = E42840B622A0060000BE5915 /* mpscnn_context.mm */; };
+		E42840CC22A0060100BE5915 /* image_handle.mm in Sources */ = {isa = PBXBuildFile; fileRef = E42840B622A0060000BE5915 /* image_handle.mm */; };
 		E42840D922A0067B00BE5915 /* MetalPerformanceShaders.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E42840D822A0067B00BE5915 /* MetalPerformanceShaders.framework */; };
 		E42840DB22A0069200BE5915 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E42840DA22A0069200BE5915 /* Metal.framework */; };
 		E42840DD22A2059F00BE5915 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = E42840DC22A2059F00BE5915 /* main.mm */; };
@@ -27,8 +27,8 @@
 
 /* Begin PBXFileReference section */
 		E42840A922A0055700BE5915 /* MPSNNGraphSample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MPSNNGraphSample; sourceTree = BUILT_PRODUCTS_DIR; };
-		E42840B522A0060000BE5915 /* mpscnn_context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mpscnn_context.h; sourceTree = "<group>"; };
-		E42840B622A0060000BE5915 /* mpscnn_context.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = mpscnn_context.mm; sourceTree = "<group>"; };
+		E42840B522A0060000BE5915 /* image_handle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = image_handle.h; sourceTree = "<group>"; };
+		E42840B622A0060000BE5915 /* image_handle.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = image_handle.mm; sourceTree = "<group>"; };
 		E42840D822A0067B00BE5915 /* MetalPerformanceShaders.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalPerformanceShaders.framework; path = System/Library/Frameworks/MetalPerformanceShaders.framework; sourceTree = SDKROOT; };
 		E42840DA22A0069200BE5915 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		E42840DC22A2059F00BE5915 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
@@ -68,8 +68,8 @@
 			isa = PBXGroup;
 			children = (
 				E42840DC22A2059F00BE5915 /* main.mm */,
-				E42840B522A0060000BE5915 /* mpscnn_context.h */,
-				E42840B622A0060000BE5915 /* mpscnn_context.mm */,
+				E42840B522A0060000BE5915 /* image_handle.h */,
+				E42840B622A0060000BE5915 /* image_handle.mm */,
 			);
 			path = MPSNNGraphSample;
 			sourceTree = "<group>";
@@ -139,7 +139,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E42840CC22A0060100BE5915 /* mpscnn_context.mm in Sources */,
+				E42840CC22A0060100BE5915 /* image_handle.mm in Sources */,
 				E42840DD22A2059F00BE5915 /* main.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

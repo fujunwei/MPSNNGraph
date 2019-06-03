@@ -282,8 +282,7 @@ id<MTLCommandQueue> CommandQueue() {
   return GetMPSCNNContext().command_queue;
 }
 
-MPSImage* CreateMPSImage(id<MTLCommandBuffer> command_buffer, const std::vector<int>& shape,
-                                        const std::vector<float>& data) {
+MPSImage* CreateMPSImage(const std::vector<int>& shape) {
   // Ceate MPSImage for inputs and outputs.
   MPSImageDescriptor* image_desc = [MPSImageDescriptor
                                     imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
@@ -295,11 +294,22 @@ MPSImage* CreateMPSImage(id<MTLCommandBuffer> command_buffer, const std::vector<
                                     MTLTextureUsageShaderWrite];
   MPSImage* mps_image = [[MPSImage alloc] initWithDevice:GetMPSCNNContext().device
                                          imageDescriptor:image_desc];
-  if (data.size() == 0) return mps_image;
+  return mps_image;
+}
+
+MPSImage* CreateMPSImageWithData(id<MTLCommandBuffer> command_buffer, const std::vector<float>& data,
+                                 const std::vector<int>& shape) {
+  // Ceate MPSImage for inputs and outputs.
+  MPSImage* mps_image = CreateMPSImage(shape);
+  UploadDataToMPSImage(command_buffer, mps_image, data);
+  return mps_image;
+}
   
-  uint32_t size = shape[0] * shape[1] * shape[2] * shape[3] * sizeof(float);
+void UploadDataToMPSImage(id<MTLCommandBuffer> command_buffer, MPSImage* mps_image,
+                          const std::vector<float>& data) {
+  size_t size = data.size() * sizeof(float);
   id<MTLBuffer> mtl_buffer = [GetMPSCNNContext().device newBufferWithLength:size
-                                                                    options:MTLResourceOptionCPUCacheModeWriteCombined];
+                                            options:MTLResourceOptionCPUCacheModeWriteCombined];
   //    id<MTLCommandBuffer> command_buffer = [GetMPSCNNContext().command_queue commandBuffer];
   
   memcpy([mtl_buffer contents], data.data(), data.size() * sizeof(float));
@@ -316,8 +326,6 @@ MPSImage* CreateMPSImage(id<MTLCommandBuffer> command_buffer, const std::vector<
   [encoder dispatchThreadgroups:inputLaunchParams.threadgroupsPerGrid
           threadsPerThreadgroup:inputLaunchParams.threadsPerThreadgroup];
   [encoder endEncoding];
-  
-  return mps_image;
 }
 
 id<MTLBuffer> OutputBuffer(id<MTLCommandBuffer> command_buffer, const MPSImage* output_img, size_t size) {
@@ -346,3 +354,45 @@ id<MTLBuffer> OutputBuffer(id<MTLCommandBuffer> command_buffer, const MPSImage* 
 }
 
 }
+
+@implementation MPSImageHandle
+
+@synthesize label_ = _label;
+@synthesize image_ = _image;
+
++ (BOOL)supportsSecureCoding {
+  return YES;
+}
+
+- (id)initWithCoder:(NSCoder*)coder {
+  self = [super init];
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder*)aCoder {
+}
+
+- (id)initWithLabel:(NSString*)label {
+  self = [super init];
+  self.label_ = label;
+  return self;
+}
+
+- (id)initWithImage:(MPSImage*)image {
+  self = [super init];
+  self.image_ = image;
+  return self;
+}
+
+-(MPSImage*) image {
+  return self.image_;
+}
+
+/*! @abstract   A label to be attached to associated MTLResources for this node
+ *  @return     A human readable string for debugging purposes
+ */
+- (NSString*)label {
+  return self.label_;
+}
+
+@end

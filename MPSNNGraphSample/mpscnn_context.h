@@ -42,9 +42,26 @@ namespace util {
 
   id<MTLDevice> DefaultDevice();
   id<MTLCommandQueue> CommandQueue();
-  MPSImage* CreateMPSImage(id<MTLCommandBuffer> command_buffer, const std::vector<int>& shape,
+  MPSImage* CreateMPSImage(const std::vector<int>& shape);
+  MPSImage* CreateMPSImageWithData(id<MTLCommandBuffer> command_buffer,
+                           const std::vector<float>& data, const std::vector<int>& shape);
+  void UploadDataToMPSImage(id<MTLCommandBuffer> command_buffer, MPSImage* mps_image,
                            const std::vector<float>& data);
   id<MTLBuffer> OutputBuffer(id<MTLCommandBuffer> command_buffer, const MPSImage* output_img, size_t size);
 
 }
+
+@interface MPSImageHandle : NSObject <MPSHandle>
+
+@property(nonatomic, copy) NSString* label_;
+@property(nonatomic, retain) MPSImage* image_;
+
+- (id)initWithImage:(MPSImage*)image;
+
+-(MPSImage*) image;    // return the MPSImage corresponding to the handle
+
+- (id)initWithLabel:(NSString*)label;
+
+@end
+
 #endif  // SERVICES_ML_MPSCNNCONTEXT_H_

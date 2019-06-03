@@ -5,10 +5,22 @@
 
 int main(int argc, const char * argv[]) {
   // Build the graph.
-  MPSNNImageNode* tensor0 = [MPSNNImageNode nodeWithHandle:nullptr];
-  MPSNNImageNode* tensor1 = [MPSNNImageNode nodeWithHandle:nullptr];
-  MPSNNImageNode* tensor2 = [MPSNNImageNode nodeWithHandle:nullptr];
-  MPSNNImageNode* tensor3 = [MPSNNImageNode nodeWithHandle:nullptr];
+  const std::vector<int> shape = {2, 2, 2, 2};
+  size_t length = 16;
+  const std::vector<float> constant_data(length, 0.5);
+  id<MTLCommandBuffer> command_buffer = [util::CommandQueue() commandBuffer];
+  MPSImage* constant0 = util::CreateMPSImageWithData(command_buffer, constant_data, shape);
+  MPSNNImageNode* tensor0 = [MPSNNImageNode nodeWithHandle:[[MPSImageHandle alloc]
+                                                            initWithImage:constant0]];
+  MPSImage* input0 = util::CreateMPSImage(shape);
+  MPSNNImageNode* tensor1 = [MPSNNImageNode nodeWithHandle:[[MPSImageHandle alloc]
+                                                            initWithImage:input0]];
+  MPSImage* constant1 = util::CreateMPSImageWithData(command_buffer, constant_data, shape);
+  MPSNNImageNode* tensor2 = [MPSNNImageNode nodeWithHandle:[[MPSImageHandle alloc]
+                                                            initWithImage:constant1]];
+  MPSImage* input1 = util::CreateMPSImage(shape);
+  MPSNNImageNode* tensor3 = [MPSNNImageNode nodeWithHandle:[[MPSImageHandle alloc]
+                                                            initWithImage:input1]];
   MPSNNAdditionNode* add_0 = [MPSNNAdditionNode nodeWithLeftSource:tensor0
                                                        rightSource:tensor1];
   MPSNNAdditionNode* add_1 = [MPSNNAdditionNode nodeWithLeftSource:tensor2
@@ -19,24 +31,18 @@ int main(int argc, const char * argv[]) {
                                       resultImage:mul.resultImage
                               resultImageIsNeeded:true];
   
-  // Set inputs data.
-  const std::vector<int> shape = {2, 2, 2, 2};
-  size_t length = 16;
-  const std::vector<float> constant_data(length, 0.5);
-  id<MTLCommandBuffer> command_buffer = [util::CommandQueue() commandBuffer];
-  MPSImage* constant0 = util::CreateMPSImage(command_buffer, shape, constant_data);
-  MPSImage* constant1 = util::CreateMPSImage(command_buffer, shape, constant_data);
+  
+  
+  // Execution Graph.
   NSMutableArray<MPSImage*>* image_array = [NSMutableArray arrayWithCapacity:1];
   const std::vector<float> input_data0(length, 1);
   const std::vector<float> input_data1(length, 2);
-  MPSImage* input0 = util::CreateMPSImage(command_buffer, shape, input_data0);
-  MPSImage* input1 = util::CreateMPSImage(command_buffer, shape, input_data1);
-  [image_array addObject:constant0];
-  [image_array addObject:input0];
-  [image_array addObject:constant1];
-  [image_array addObject:input1];
-  
-  // Execution Graph.
+  util::UploadDataToMPSImage(command_buffer, input0, input_data0);
+  util::UploadDataToMPSImage(command_buffer, input1, input_data1);
+  NSArray<MPSImageHandle*> * handles = graph.sourceImageHandles;
+  for (size_t i = 0; i < handles.count; ++i) {
+    [image_array addObject:handles[i].image];
+  }
   MPSImage* output_image = [graph encodeToCommandBuffer:command_buffer
                                            sourceImages:image_array
                                            sourceStates:nullptr

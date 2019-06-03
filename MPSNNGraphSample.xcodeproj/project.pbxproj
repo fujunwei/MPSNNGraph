@@ -8,17 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		E42840CC22A0060100BE5915 /* mpscnn_context.mm in Sources */ = {isa = PBXBuildFile; fileRef = E42840B622A0060000BE5915 /* mpscnn_context.mm */; };
-		E42840CD22A0060100BE5915 /* execution_impl_mac_mps.mm in Sources */ = {isa = PBXBuildFile; fileRef = E42840B822A0060000BE5915 /* execution_impl_mac_mps.mm */; };
-		E42840CF22A0060100BE5915 /* compilation_impl_mac.mm in Sources */ = {isa = PBXBuildFile; fileRef = E42840BA22A0060000BE5915 /* compilation_impl_mac.mm */; };
-		E42840D022A0060100BE5915 /* common.cc in Sources */ = {isa = PBXBuildFile; fileRef = E42840BC22A0060000BE5915 /* common.cc */; };
-		E42840D222A0060100BE5915 /* compilation_impl_mac_mps.mm in Sources */ = {isa = PBXBuildFile; fileRef = E42840C022A0060000BE5915 /* compilation_impl_mac_mps.mm */; };
-		E42840D322A0060100BE5915 /* ml_utils_mac.mm in Sources */ = {isa = PBXBuildFile; fileRef = E42840C222A0060000BE5915 /* ml_utils_mac.mm */; };
-		E42840D422A0060100BE5915 /* mps_protocols_impl.mm in Sources */ = {isa = PBXBuildFile; fileRef = E42840C322A0060000BE5915 /* mps_protocols_impl.mm */; };
-		E42840D522A0060100BE5915 /* model_impl_mac.mm in Sources */ = {isa = PBXBuildFile; fileRef = E42840C722A0060000BE5915 /* model_impl_mac.mm */; };
 		E42840D922A0067B00BE5915 /* MetalPerformanceShaders.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E42840D822A0067B00BE5915 /* MetalPerformanceShaders.framework */; };
 		E42840DB22A0069200BE5915 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E42840DA22A0069200BE5915 /* Metal.framework */; };
 		E42840DD22A2059F00BE5915 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = E42840DC22A2059F00BE5915 /* main.mm */; };
-		E42840E022A3C59800BE5915 /* depthwise_conv_test.mm in Sources */ = {isa = PBXBuildFile; fileRef = E42840DE22A3C59800BE5915 /* depthwise_conv_test.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,28 +27,11 @@
 
 /* Begin PBXFileReference section */
 		E42840A922A0055700BE5915 /* MPSNNGraphSample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MPSNNGraphSample; sourceTree = BUILT_PRODUCTS_DIR; };
-		E42840B322A0060000BE5915 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
 		E42840B522A0060000BE5915 /* mpscnn_context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mpscnn_context.h; sourceTree = "<group>"; };
 		E42840B622A0060000BE5915 /* mpscnn_context.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = mpscnn_context.mm; sourceTree = "<group>"; };
-		E42840B822A0060000BE5915 /* execution_impl_mac_mps.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = execution_impl_mac_mps.mm; sourceTree = "<group>"; };
-		E42840BA22A0060000BE5915 /* compilation_impl_mac.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = compilation_impl_mac.mm; sourceTree = "<group>"; };
-		E42840BB22A0060000BE5915 /* compilation_impl_mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = compilation_impl_mac.h; sourceTree = "<group>"; };
-		E42840BC22A0060000BE5915 /* common.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = common.cc; sourceTree = "<group>"; };
-		E42840BE22A0060000BE5915 /* ml_utils_mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ml_utils_mac.h; sourceTree = "<group>"; };
-		E42840C022A0060000BE5915 /* compilation_impl_mac_mps.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = compilation_impl_mac_mps.mm; sourceTree = "<group>"; };
-		E42840C122A0060000BE5915 /* model_impl_mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_impl_mac.h; sourceTree = "<group>"; };
-		E42840C222A0060000BE5915 /* ml_utils_mac.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ml_utils_mac.mm; sourceTree = "<group>"; };
-		E42840C322A0060000BE5915 /* mps_protocols_impl.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = mps_protocols_impl.mm; sourceTree = "<group>"; };
-		E42840C422A0060000BE5915 /* mps_protocols_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mps_protocols_impl.h; sourceTree = "<group>"; };
-		E42840C522A0060000BE5915 /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
-		E42840C722A0060000BE5915 /* model_impl_mac.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = model_impl_mac.mm; sourceTree = "<group>"; };
-		E42840C922A0060000BE5915 /* compilation_impl_mac_mps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = compilation_impl_mac_mps.h; sourceTree = "<group>"; };
-		E42840CA22A0060100BE5915 /* execution_impl_mac_mps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = execution_impl_mac_mps.h; sourceTree = "<group>"; };
 		E42840D822A0067B00BE5915 /* MetalPerformanceShaders.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalPerformanceShaders.framework; path = System/Library/Frameworks/MetalPerformanceShaders.framework; sourceTree = SDKROOT; };
 		E42840DA22A0069200BE5915 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		E42840DC22A2059F00BE5915 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
-		E42840DE22A3C59800BE5915 /* depthwise_conv_test.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = depthwise_conv_test.mm; sourceTree = "<group>"; };
-		E42840DF22A3C59800BE5915 /* depthwise_conv_test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = depthwise_conv_test.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,24 +67,7 @@
 		E42840AB22A0055700BE5915 /* MPSNNGraphSample */ = {
 			isa = PBXGroup;
 			children = (
-				E42840DF22A3C59800BE5915 /* depthwise_conv_test.h */,
-				E42840DE22A3C59800BE5915 /* depthwise_conv_test.mm */,
 				E42840DC22A2059F00BE5915 /* main.mm */,
-				E42840BC22A0060000BE5915 /* common.cc */,
-				E42840B322A0060000BE5915 /* common.h */,
-				E42840C922A0060000BE5915 /* compilation_impl_mac_mps.h */,
-				E42840C022A0060000BE5915 /* compilation_impl_mac_mps.mm */,
-				E42840BB22A0060000BE5915 /* compilation_impl_mac.h */,
-				E42840BA22A0060000BE5915 /* compilation_impl_mac.mm */,
-				E42840C522A0060000BE5915 /* constants.h */,
-				E42840CA22A0060100BE5915 /* execution_impl_mac_mps.h */,
-				E42840B822A0060000BE5915 /* execution_impl_mac_mps.mm */,
-				E42840BE22A0060000BE5915 /* ml_utils_mac.h */,
-				E42840C222A0060000BE5915 /* ml_utils_mac.mm */,
-				E42840C122A0060000BE5915 /* model_impl_mac.h */,
-				E42840C722A0060000BE5915 /* model_impl_mac.mm */,
-				E42840C422A0060000BE5915 /* mps_protocols_impl.h */,
-				E42840C322A0060000BE5915 /* mps_protocols_impl.mm */,
 				E42840B522A0060000BE5915 /* mpscnn_context.h */,
 				E42840B622A0060000BE5915 /* mpscnn_context.mm */,
 			);
@@ -181,16 +139,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E42840D022A0060100BE5915 /* common.cc in Sources */,
-				E42840D522A0060100BE5915 /* model_impl_mac.mm in Sources */,
-				E42840CD22A0060100BE5915 /* execution_impl_mac_mps.mm in Sources */,
 				E42840CC22A0060100BE5915 /* mpscnn_context.mm in Sources */,
-				E42840D322A0060100BE5915 /* ml_utils_mac.mm in Sources */,
-				E42840D222A0060100BE5915 /* compilation_impl_mac_mps.mm in Sources */,
 				E42840DD22A2059F00BE5915 /* main.mm in Sources */,
-				E42840D422A0060100BE5915 /* mps_protocols_impl.mm in Sources */,
-				E42840CF22A0060100BE5915 /* compilation_impl_mac.mm in Sources */,
-				E42840E022A3C59800BE5915 /* depthwise_conv_test.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

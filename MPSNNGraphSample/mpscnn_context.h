@@ -15,8 +15,6 @@
 #include <string>
 #include <unordered_map>
 
-namespace ml {
-
 struct API_AVAILABLE(macosx(10.13)) MPSCNNContext {
  public:
   MPSCNNContext();
@@ -33,9 +31,6 @@ struct API_AVAILABLE(macosx(10.13)) MPSCNNContext {
   id<MTLComputePipelineState> GetPipelineState(NSString* kernel);
   id<MTLComputePipelineState> GetSpecializedPipelineState(NSString* kernel,
                                                           const std::vector<ushort>& constants);
-  MPSImage* CreateMPSImage(id<MTLCommandBuffer> command_buffer, const std::vector<int>& shape,
-                            const std::vector<float>& data);
-  id<MTLBuffer> OutputBuffer(id<MTLCommandBuffer> command_buffer, const MPSImage* output_img, size_t size);
   
  private:
   std::unordered_map<std::string, id<MTLComputePipelineState>> pipelineCache_;
@@ -43,6 +38,13 @@ struct API_AVAILABLE(macosx(10.13)) MPSCNNContext {
 
 MPSCNNContext& API_AVAILABLE(macosx(10.13)) GetMPSCNNContext();
 
-}
+namespace util {
 
+  id<MTLDevice> DefaultDevice();
+  id<MTLCommandQueue> CommandQueue();
+  MPSImage* CreateMPSImage(id<MTLCommandBuffer> command_buffer, const std::vector<int>& shape,
+                           const std::vector<float>& data);
+  id<MTLBuffer> OutputBuffer(id<MTLCommandBuffer> command_buffer, const MPSImage* output_img, size_t size);
+
+}
 #endif  // SERVICES_ML_MPSCNNCONTEXT_H_

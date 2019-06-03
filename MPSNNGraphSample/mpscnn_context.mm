@@ -7,8 +7,6 @@
 #include <iostream>
 #import <Metal/MTLFunctionConstantValues.h>
 
-namespace ml {
-
 namespace {
   NSString* API_AVAILABLE(macosx(10.13)) KernelFor(const MPSImage* X,
                                                    NSString* arrayKernel,
@@ -273,68 +271,78 @@ id<MTLComputePipelineState> MPSCNNContext::GetSpecializedPipelineState(
   pipelineCache_[kernelStr] = state;
   return state;
 }
+
+namespace util {
+
+id<MTLDevice> DefaultDevice() {
+  return GetMPSCNNContext().device;
+}
+
+id<MTLCommandQueue> CommandQueue() {
+  return GetMPSCNNContext().command_queue;
+}
+
+MPSImage* CreateMPSImage(id<MTLCommandBuffer> command_buffer, const std::vector<int>& shape,
+                                        const std::vector<float>& data) {
+  // Ceate MPSImage for inputs and outputs.
+  MPSImageDescriptor* image_desc = [MPSImageDescriptor
+                                    imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
+                                    width:shape[2]
+                                    height:shape[1]
+                                    featureChannels:shape[3]
+                                    numberOfImages:shape[0]
+                                    usage:MTLTextureUsageShaderRead |
+                                    MTLTextureUsageShaderWrite];
+  MPSImage* mps_image = [[MPSImage alloc] initWithDevice:GetMPSCNNContext().device
+                                         imageDescriptor:image_desc];
+  if (data.size() == 0) return mps_image;
   
-  MPSImage* MPSCNNContext::CreateMPSImage(id<MTLCommandBuffer> command_buffer, const std::vector<int>& shape,
-                            const std::vector<float>& data) {
-    // Ceate MPSImage for inputs and outputs.
-    MPSImageDescriptor* image_desc = [MPSImageDescriptor
-                                         imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
-                                         width:shape[2]
-                                         height:shape[1]
-                                         featureChannels:shape[3]
-                                         numberOfImages:shape[0]
-                                         usage:MTLTextureUsageShaderRead |
-                                         MTLTextureUsageShaderWrite];
-    MPSImage* mps_image = [[MPSImage alloc] initWithDevice:GetMPSCNNContext().device
-                                           imageDescriptor:image_desc];
-    if (data.size() == 0) return mps_image;
-
-    uint32_t size = shape[0] * shape[1] * shape[2] * shape[3] * sizeof(float);
-    id<MTLBuffer> mtl_buffer = [GetMPSCNNContext().device newBufferWithLength:size
-                                     options:MTLResourceOptionCPUCacheModeWriteCombined];
-//    id<MTLCommandBuffer> command_buffer = [GetMPSCNNContext().command_queue commandBuffer];
-
-    memcpy([mtl_buffer contents], data.data(), data.size() * sizeof(float));
-    id<MTLComputeCommandEncoder> encoder = [command_buffer computeCommandEncoder];
-    id<MTLComputePipelineState> state =
-        GetMPSCNNContext().GetSpecializedPipelineState(KernelFor(mps_image, @"copy_nhwc_to_metal",
-                                                                 @"copy_nhwc_to_metal_nonarray"),
-                                                {{ushort(mps_image.height), ushort(mps_image.width),
-                                                ushort(mps_image.featureChannels)}});
-    [encoder setComputePipelineState:state];
-    [encoder setBuffer:mtl_buffer offset:0 atIndex:0];
-    [encoder setTexture:[mps_image texture] atIndex:0];
-    const auto& inputLaunchParams = SpatialPointwiseKernelLaunchParams(state, mps_image);
-    [encoder dispatchThreadgroups:inputLaunchParams.threadgroupsPerGrid
-            threadsPerThreadgroup:inputLaunchParams.threadsPerThreadgroup];
-    [encoder endEncoding];
-
-    return mps_image;
-  }
+  uint32_t size = shape[0] * shape[1] * shape[2] * shape[3] * sizeof(float);
+  id<MTLBuffer> mtl_buffer = [GetMPSCNNContext().device newBufferWithLength:size
+                                                                    options:MTLResourceOptionCPUCacheModeWriteCombined];
+  //    id<MTLCommandBuffer> command_buffer = [GetMPSCNNContext().command_queue commandBuffer];
   
-  id<MTLBuffer> MPSCNNContext::OutputBuffer(id<MTLCommandBuffer> command_buffer, const MPSImage* output_img, size_t size) {
-    id<MTLComputeCommandEncoder> encoder = [command_buffer computeCommandEncoder];
-    id<MTLComputePipelineState> state =
-    GetMPSCNNContext().GetSpecializedPipelineState(
-                                                   KernelFor(output_img, @"copy_metal_to_nhwc",
-                                                             @"copy_metal_to_nhwc_nonarray"),
-                                                   {{ushort(output_img.height), ushort(output_img.width),
-      ushort(output_img.featureChannels)}});
-    id<MTLBuffer> output_buffer = [GetMPSCNNContext().device
-                                   newBufferWithLength:size
-                                   options:MTLResourceOptionCPUCacheModeWriteCombined];
-    
-    [encoder setComputePipelineState:state];
-    [encoder setBuffer:output_buffer offset:0 atIndex:0];
-    [encoder setTexture:[output_img texture] atIndex:0];
-    
-    const auto& outputLaunchParams =
-    SpatialPointwiseKernelLaunchParams(state, output_img);
-    [encoder
-     dispatchThreadgroups:outputLaunchParams.threadgroupsPerGrid
-     threadsPerThreadgroup:outputLaunchParams.threadsPerThreadgroup];
-    [encoder endEncoding];
-    return output_buffer;
-  }
+  memcpy([mtl_buffer contents], data.data(), data.size() * sizeof(float));
+  id<MTLComputeCommandEncoder> encoder = [command_buffer computeCommandEncoder];
+  id<MTLComputePipelineState> state =
+  GetMPSCNNContext().GetSpecializedPipelineState(KernelFor(mps_image, @"copy_nhwc_to_metal",
+                                                           @"copy_nhwc_to_metal_nonarray"),
+                                                 {{ushort(mps_image.height), ushort(mps_image.width),
+    ushort(mps_image.featureChannels)}});
+  [encoder setComputePipelineState:state];
+  [encoder setBuffer:mtl_buffer offset:0 atIndex:0];
+  [encoder setTexture:[mps_image texture] atIndex:0];
+  const auto& inputLaunchParams = SpatialPointwiseKernelLaunchParams(state, mps_image);
+  [encoder dispatchThreadgroups:inputLaunchParams.threadgroupsPerGrid
+          threadsPerThreadgroup:inputLaunchParams.threadsPerThreadgroup];
+  [encoder endEncoding];
+  
+  return mps_image;
+}
+
+id<MTLBuffer> OutputBuffer(id<MTLCommandBuffer> command_buffer, const MPSImage* output_img, size_t size) {
+  id<MTLComputeCommandEncoder> encoder = [command_buffer computeCommandEncoder];
+  id<MTLComputePipelineState> state =
+  GetMPSCNNContext().GetSpecializedPipelineState(
+                                                 KernelFor(output_img, @"copy_metal_to_nhwc",
+                                                           @"copy_metal_to_nhwc_nonarray"),
+                                                 {{ushort(output_img.height), ushort(output_img.width),
+    ushort(output_img.featureChannels)}});
+  id<MTLBuffer> output_buffer = [GetMPSCNNContext().device
+                                 newBufferWithLength:size
+                                 options:MTLResourceOptionCPUCacheModeWriteCombined];
+  
+  [encoder setComputePipelineState:state];
+  [encoder setBuffer:output_buffer offset:0 atIndex:0];
+  [encoder setTexture:[output_img texture] atIndex:0];
+  
+  const auto& outputLaunchParams =
+  SpatialPointwiseKernelLaunchParams(state, output_img);
+  [encoder
+   dispatchThreadgroups:outputLaunchParams.threadgroupsPerGrid
+   threadsPerThreadgroup:outputLaunchParams.threadsPerThreadgroup];
+  [encoder endEncoding];
+  return output_buffer;
+}
 
 }

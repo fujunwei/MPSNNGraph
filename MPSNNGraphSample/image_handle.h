@@ -12,3 +12,8 @@
 - (id)initWithLabel:(NSString*)label;
 
 @end
+
+id<MTLBuffer> CreateOutputBuffer(id<MTLDevice> device,
+                                 id<MTLCommandBuffer> command_buffer,
+                                 const MPSImage* output_img,
+                                 size_t size);

@@ -107,11 +107,20 @@ int main(int argc, const char * argv[]) {
                                            sourceStates:nullptr
                                            intermediateImages:nullptr
                                            destinationStates:nullptr];
+  size_t size = length * sizeof(__fp16);
+  id<MTLBuffer> output_buffer = CreateOutputBuffer(device, command_buffer, output_image, size);
+
   [command_buffer commit];
   [command_buffer waitUntilCompleted];
-  
   // Get output data.
-  ReadDataFromMPSImage(output_image);
+//    ReadDataFromMPSImage(output_image, output_buffer);
+  std::vector<__fp16> output_data(length);
+  memcpy(output_data.data(), [output_buffer contents], size);
+  std::cout << "[";
+  for (size_t i = 0; i < length; ++i) {
+    std::cout << output_data[i] << ' ';
+  }
+  std::cout << ']' << std::endl;
 
   return 0;
 }

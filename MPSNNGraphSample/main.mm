@@ -9,7 +9,7 @@ namespace {
 MPSImage* CreateMPSImage(id<MTLDevice> device, const std::vector<int>& shape) {
   // Ceate MPSImage for inputs and outputs.
   MPSImageDescriptor* image_desc = [MPSImageDescriptor
-                                    imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
+                                    imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat16
                                     width:shape[2]
                                     height:shape[1]
                                     featureChannels:shape[3]
@@ -22,18 +22,18 @@ MPSImage* CreateMPSImage(id<MTLDevice> device, const std::vector<int>& shape) {
 }
 
 void UploadDataToMPSImage(MPSImage* mps_image,
-                          const std::vector<float>& data) {
+                          const std::vector<__fp16>& data) {
   for (size_t i = 0; i < mps_image.numberOfImages; ++i) {
     [mps_image writeBytes:data.data()
                dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
-              bytesPerRow:mps_image.width * sizeof(float)
+              bytesPerRow:mps_image.width * sizeof(__fp16)
                    region:MTLRegionMake2D(0, 0, mps_image.width, mps_image.height)
        featureChannelInfo:{0, mps_image.featureChannels}
                imageIndex:i];
   }
 }
 
-MPSImage* CreateMPSImageWithData(id<MTLDevice> device, const std::vector<float>& data,
+MPSImage* CreateMPSImageWithData(id<MTLDevice> device, const std::vector<__fp16>& data,
                                  const std::vector<int>& shape) {
   // Ceate MPSImage for inputs and outputs.
   MPSImage* mps_image = CreateMPSImage(device, shape);
@@ -67,7 +67,7 @@ int main(int argc, const char * argv[]) {
   // Build the graph.
   const std::vector<int> shape = {2, 2, 2, 2};
   size_t length = 16;
-  const std::vector<float> constant_data(length, 0.5);
+  const std::vector<__fp16> constant_data(length, 0.5);
   id<MTLDevice> device = MTLCreateSystemDefaultDevice();
   id<MTLCommandBuffer> command_buffer = [[device newCommandQueue] commandBuffer];
   MPSImage* constant0 = CreateMPSImageWithData(device, constant_data, shape);
@@ -94,8 +94,8 @@ int main(int argc, const char * argv[]) {
   
   // Execution Graph.
   NSMutableArray<MPSImage*>* image_array = [NSMutableArray arrayWithCapacity:1];
-  const std::vector<float> input_data0(length, 1);
-  const std::vector<float> input_data1(length, 2);
+  const std::vector<__fp16> input_data0(length, 1);
+  const std::vector<__fp16> input_data1(length, 2);
   UploadDataToMPSImage(input0, input_data0);
   UploadDataToMPSImage(input1, input_data1);
   NSArray<MPSImageHandle*> * handles = graph.sourceImageHandles;

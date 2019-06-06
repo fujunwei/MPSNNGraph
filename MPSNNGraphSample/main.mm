@@ -41,33 +41,13 @@ MPSImage* CreateMPSImageWithData(id<MTLDevice> device, const std::vector<__fp16>
   return mps_image;
 }
 
-void ReadDataFromMPSImage(MPSImage* mps_image) {
-  std::vector<__fp16> data(mps_image.width * mps_image.height * mps_image.featureChannels);
-  std::cout << "\n";
-  for (size_t i = 0; i < mps_image.numberOfImages; ++i) {
-    [mps_image readBytes:data.data()
-               dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
-              bytesPerRow:mps_image.width * sizeof(__fp16)
-                   region:MTLRegionMake2D(0, 0, mps_image.width, mps_image.height)
-       featureChannelInfo:{0, mps_image.featureChannels}
-               imageIndex:i];
-    
-    std::cout << "[ ";
-    for (size_t i = 0; i < data.size(); ++i)
-    {
-      std::cout << data[i] << ' ';
-    }
-    std::cout << ']' << std::endl;
-  }
-}
-
 }
 
 int main(int argc, const char * argv[]) {
   // Build the graph.
-  const std::vector<int> shape = {2, 2, 2, 2};
+  const std::vector<int> shape = {1, 4, 4, 1};
   size_t length = 16;
-  const std::vector<__fp16> constant_data(length, 0.5);
+  const std::vector<__fp16> constant_data(length, 0);
   id<MTLDevice> device = MTLCreateSystemDefaultDevice();
   id<MTLCommandBuffer> command_buffer = [[device newCommandQueue] commandBuffer];
   MPSImage* constant0 = CreateMPSImageWithData(device, constant_data, shape);
@@ -86,16 +66,16 @@ int main(int argc, const char * argv[]) {
                                                        rightSource:tensor1];
   MPSNNAdditionNode* add_1 = [MPSNNAdditionNode nodeWithLeftSource:tensor2
                                                        rightSource:tensor3];
-  MPSNNMultiplicationNode* mul = [MPSNNMultiplicationNode nodeWithLeftSource:add_0.resultImage
+  MPSNNAdditionNode* mul = [MPSNNAdditionNode nodeWithLeftSource:add_0.resultImage
                                                                  rightSource:add_1.resultImage];
   MPSNNGraph* graph = [MPSNNGraph graphWithDevice:device
                                       resultImage:mul.resultImage
                               resultImageIsNeeded:true];
   
-  // Execution Graph.
+  // Execute Graph.
   NSMutableArray<MPSImage*>* image_array = [NSMutableArray arrayWithCapacity:1];
-  const std::vector<__fp16> input_data0(length, 1);
-  const std::vector<__fp16> input_data1(length, 2);
+  const std::vector<__fp16> input_data0(length, 2.2334524562);
+  const std::vector<__fp16> input_data1(length, 0);
   UploadDataToMPSImage(input0, input_data0);
   UploadDataToMPSImage(input1, input_data1);
   NSArray<MPSImageHandle*> * handles = graph.sourceImageHandles;
@@ -113,7 +93,6 @@ int main(int argc, const char * argv[]) {
   [command_buffer commit];
   [command_buffer waitUntilCompleted];
   // Get output data.
-//    ReadDataFromMPSImage(output_image, output_buffer);
   std::vector<__fp16> output_data(length);
   memcpy(output_data.data(), [output_buffer contents], size);
   std::cout << "[";
